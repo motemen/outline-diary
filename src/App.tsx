@@ -7,13 +7,18 @@ import remarkFrontmatter from "remark-frontmatter";
 import remarkRehype from "remark-rehype";
 import rehypeReact from "rehype-react";
 import { u } from "unist-builder";
-import { Content, Root } from "mdast";
+import type { Content, Root } from "mdast";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import { createTheme, ThemeProvider } from "@mui/material";
 import { load as loadYAML } from "js-yaml";
 import { Helmet } from "react-helmet";
 import { useHash } from "react-use";
+import {
+  useQueryParam,
+  StringParam,
+  QueryParamProvider,
+} from "use-query-params";
 
 const darkTheme = createTheme({
   palette: {
@@ -71,13 +76,28 @@ const transformHighlightQuery = (query: string | undefined) => (tree: Root) => {
 
 function App() {
   const fetcher = (url: string) => fetch(url).then((r) => r.text());
-  const { data, error } = useSWR("./motemen.md", fetcher);
 
   const [hash, setHash] = useHash();
-  console.log(hash);
+  let [source, setSource] = useQueryParam("u", StringParam);
+  if (!source) {
+    setSource(() => "./outer_wilds.md", "replaceIn");
+  }
   const [query, setQuery_] = useState<string | undefined>(
     decodeURIComponent(hash.replace(/^#/, ""))
   );
+
+  const { data, error } = useSWR(source, fetcher);
+
+  if (error) {
+    return (
+      <div className="error">
+        ❌ Failed to fetch {source}: {`${error}`}
+      </div>
+    );
+  }
+  if (!data || !source) {
+    return <div className="loading"></div>;
+  }
 
   const setQuery = (query: string) => {
     setQuery_(query);
@@ -106,13 +126,6 @@ function App() {
 
   const content = processor.processSync(data).result;
 
-  if (error) {
-    return <div className="error">ERROR: {error}</div>;
-  }
-  if (!data) {
-    return <div className="loading"></div>;
-  }
-
   return (
     <ThemeProvider theme={darkTheme}>
       <Helmet>
@@ -132,6 +145,9 @@ function App() {
             <TextField placeholder="Filter…" {...params} variant="standard" />
           )}
         ></Autocomplete>
+        <small>
+          Source: <a href={source}>{source}</a>
+        </small>
       </nav>
       <main>
         <div>{content}</div>
@@ -140,4 +156,10 @@ function App() {
   );
 }
 
-export default App;
+const WrappedApp = () => (
+  <QueryParamProvider>
+    <App></App>
+  </QueryParamProvider>
+);
+
+export default WrappedApp;
