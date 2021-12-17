@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/outline-diary/static/css/main.2e980ce4.chunk.css",
+    "main.js": "/outline-diary/static/js/main.0319549f.chunk.js",
+    "main.js.map": "/outline-diary/static/js/main.0319549f.chunk.js.map",
+    "runtime-main.js": "/outline-diary/static/js/runtime-main.d0a8eaaa.js",
+    "runtime-main.js.map": "/outline-diary/static/js/runtime-main.d0a8eaaa.js.map",
+    "static/js/2.fdd3df9a.chunk.js": "/outline-diary/static/js/2.fdd3df9a.chunk.js",
+    "static/js/2.fdd3df9a.chunk.js.map": "/outline-diary/static/js/2.fdd3df9a.chunk.js.map",
+    "static/js/3.70c82a11.chunk.js": "/outline-diary/static/js/3.70c82a11.chunk.js",
+    "static/js/3.70c82a11.chunk.js.map": "/outline-diary/static/js/3.70c82a11.chunk.js.map",
+    "index.html": "/outline-diary/index.html",
+    "static/css/main.2e980ce4.chunk.css.map": "/outline-diary/static/css/main.2e980ce4.chunk.css.map",
+    "static/js/2.fdd3df9a.chunk.js.LICENSE.txt": "/outline-diary/static/js/2.fdd3df9a.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.d0a8eaaa.js",
+    "static/js/2.fdd3df9a.chunk.js",
+    "static/css/main.2e980ce4.chunk.css",
+    "static/js/main.0319549f.chunk.js"
+  ]
+}
