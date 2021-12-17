@@ -12,49 +12,57 @@ function App() {
   const fetcher = (url: string) => fetch(url).then((r) => r.text());
   const { data, error } = useSWR("./motemen.md", fetcher);
 
-  const [query, setQuery] = useState<string | undefined>("巨人の大海");
+  const [query, setQuery] = useState<string | undefined>("");
 
   const processor = unified()
     .use(remarkParse)
-    .use(() => {
-      return (tree) => {
-        return u(
-          "root",
-          tree.children.flatMap((node): Content[] => {
-            if (node.type !== "list") {
-              return [node];
+    .use(() => (tree) => {
+      if (!query) {
+        return tree;
+      }
+
+      return {
+        ...tree,
+        children: tree.children.flatMap((node): Content[] => {
+          if (node.type !== "list") {
+            return [node];
+          }
+
+          const mod = (node: Content): boolean => {
+            if (!("children" in node)) {
+              return false;
             }
 
-            const mod = (node: Content) => {
-              if ("children" in node) {
-                node.children = node.children.flatMap((node): any[] => {
-                  if (
-                    query &&
-                    node.type === "text" &&
-                    node.value.includes(query)
-                  ) {
-                    const parts = node.value
-                      .split(query)
-                      .map((p) => u("text", p));
-                    return parts.flatMap((p, i) => {
-                      return i === 0
-                        ? [p]
-                        : [u("strong", [u("text", query)]), p];
-                    });
-                  }
-
-                  mod(node);
-
-                  return [node];
-                });
+            let found = false;
+            node.children = node.children.flatMap((node): any[] => {
+              if (node.type === "text" && node.value.includes(query)) {
+                const parts = node.value.split(query).map((p) => u("text", p));
+                found = true;
+                return parts.flatMap((p, i) =>
+                  i === 0 ? [p] : [u("strong", [u("text", query)]), p]
+                );
               }
-            };
 
-            node.children.forEach(mod);
+              if (mod(node)) {
+                found = true;
+              }
 
-            return [node];
-          })
-        );
+              return [node];
+            });
+
+            return found;
+          };
+
+          node.children = node.children.flatMap((node) => {
+            if (mod(node)) {
+              return [node];
+            } else {
+              return [];
+            }
+          });
+
+          return [node];
+        }),
       };
     })
     .use(remarkRehype)
