@@ -80,7 +80,7 @@ function App() {
   const [hash, setHash] = useHash();
   let [source, setSource] = useQueryParam("u", StringParam);
   if (!source) {
-    setSource(() => "./outer_wilds.md", "replaceIn");
+    setSource(() => "./outer_wilds.md.txt", "replaceIn");
   }
   const [query, setQuery_] = useState<string | undefined>(
     decodeURIComponent(hash.replace(/^#/, ""))
