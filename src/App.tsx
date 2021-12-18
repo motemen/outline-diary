@@ -75,7 +75,7 @@ const transformHighlightQuery = (query: string | undefined) => (tree: Root) => {
 };
 
 function App() {
-  const DEFAULT_SOURCE = "./outer_wilds.md.txt";
+  const DEFAULT_SOURCE = "./outer_wilds.md";
   const fetcher = (url: string) => fetch(url).then((r) => r.text());
 
   const [hash, setHash] = useHash();
