@@ -75,14 +75,16 @@ const transformHighlightQuery = (query: string | undefined) => (tree: Root) => {
 };
 
 function App() {
+  const DEFAULT_SOURCE = "./outer_wilds.md.txt";
   const fetcher = (url: string) => fetch(url).then((r) => r.text());
 
   const [hash, setHash] = useHash();
-  let [source, setSource] = useQueryParam("u", StringParam);
+  let [source, setLocationParamSource] = useQueryParam("u", StringParam);
   if (!source) {
-    setSource(() => "./outer_wilds.md.txt", "replaceIn");
+    setLocationParamSource(DEFAULT_SOURCE, "replaceIn");
+    source = DEFAULT_SOURCE;
   }
-  const [query, setQuery_] = useState<string | undefined>(
+  const [query, setQueryState] = useState<string | undefined>(
     decodeURIComponent(hash.replace(/^#/, ""))
   );
 
@@ -100,7 +102,7 @@ function App() {
   }
 
   const setQuery = (query: string) => {
-    setQuery_(query);
+    setQueryState(query);
     setHash(query);
   };
 
